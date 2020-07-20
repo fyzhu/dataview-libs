@@ -1,5 +1,6 @@
-import { openBlock, createBlock, createVNode, pushScopeId, popScopeId, toDisplayString, withScopeId, onMounted, createCommentVNode, computed, renderSlot, ref, getCurrentInstance, onUnmounted, nextTick } from 'vue';
+import { openBlock, createBlock, createVNode, pushScopeId, popScopeId, toDisplayString, withScopeId, onMounted, createCommentVNode, computed, renderSlot, ref, getCurrentInstance, onUnmounted, nextTick, watch } from 'vue';
 import crypto from 'crypto';
+import Echarts from 'echarts';
 
 //
 //
@@ -2016,6 +2017,399 @@ function Container (Vue) {
   Vue.component(script$7.name, script$7);
 }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var script$8 = {
+  name: 'ImoocLogo',
+  props: {
+    strokeWidth: {
+      type: [String, Number],
+      "default": 1
+    },
+    stroke: {
+      type: String,
+      "default": '#000'
+    }
+  }
+};
+
+const _withId$5 = /*#__PURE__*/withScopeId("data-v-46aab5e5");
+
+pushScopeId("data-v-46aab5e5");
+const _hoisted_1$7 = {
+  class: "imooc-logo",
+  viewBox: "0 0 1082 1024"
+};
+popScopeId();
+
+const render$8 = /*#__PURE__*/_withId$5(function render(_ctx, _cache) {
+  return (openBlock(), createBlock("svg", _hoisted_1$7, [
+    createVNode("path", {
+      stroke: _ctx.stroke,
+      "stroke-width": _ctx.strokeWidth,
+      class: "imooc-logo1",
+      d: "M533.767 0l158.995 304.74s-278.24 164.672-442.914 444.805l13.25-92.746L0.076 389.915l367.201-41.641z"
+    }, null, 8 /* PROPS */, ["stroke", "stroke-width"]),
+    createVNode("path", {
+      stroke: _ctx.stroke,
+      "stroke-width": _ctx.strokeWidth,
+      class: "imooc-logo1",
+      d: "M232.813 819.351s384.237-577.074 849.94-433.222l-60.57 66.248s-253.634-24.606-388.022 71.926c0 0-264.991 132.496-401.272 310.418z"
+    }, null, 8 /* PROPS */, ["stroke", "stroke-width"]),
+    createVNode("path", {
+      stroke: _ctx.stroke,
+      "stroke-width": _ctx.strokeWidth,
+      class: "imooc-logo1",
+      d: "M902.861 564.052l-81.39 79.497s-278.24 11.357-588.658 240.384c0 0 300.954-359.857 670.048-319.881z"
+    }, null, 8 /* PROPS */, ["stroke", "stroke-width"]),
+    createVNode("path", {
+      stroke: _ctx.stroke,
+      "stroke-width": _ctx.strokeWidth,
+      class: "imooc-logo1",
+      d: "M223.35 921.79s321.774-217.672 611.37-179.816L868.792 1024 546.108 849.863l-341.61 173.91z"
+    }, null, 8 /* PROPS */, ["stroke", "stroke-width"])
+  ]))
+});
+
+var css_248z$7 = ".imooc-logo[data-v-46aab5e5] {\n  width: 100%;\n  height: 100%;\n}\n\n.imooc-logo1[data-v-46aab5e5] {\n  fill: none;\n  animation: imooc-logo-animation-data-v-46aab5e5 5s linear infinite forwards;\n}\n\n@keyframes imooc-logo-animation-data-v-46aab5e5 {\n  0% {\n    stroke-dasharray: 2202;\n    stroke-dashoffset: 2202;\n  }\n  50% {\n    stroke-dasharray: 2202;\n    stroke-dashoffset: 0;\n  }\n  100% {\n    stroke-dasharray: 2202;\n    stroke-dashoffset: 0;\n  }\n}";
+styleInject(css_248z$7);
+
+script$8.render = render$8;
+script$8.__scopeId = "data-v-46aab5e5";
+script$8.__file = "src/components/ImoocLogo/ImoocLogo.vue";
+
+function ImoocLogo (Vue) {
+  Vue.component(script$8.name, script$8);
+}
+
+var lastTime = 0;
+var prefixes = 'webkit moz ms o'.split(' '); // 各浏览器前缀
+
+var requestAnimationFrame;
+var cancelAnimationFrame;
+var isServer = typeof window === 'undefined';
+
+if (isServer) {
+  requestAnimationFrame = function requestAnimationFrame() {};
+
+  cancelAnimationFrame = function cancelAnimationFrame() {};
+} else {
+  requestAnimationFrame = window.requestAnimationFrame;
+  cancelAnimationFrame = window.cancelAnimationFrame;
+  var prefix; // 通过遍历各浏览器前缀，来得到requestAnimationFrame和cancelAnimationFrame在当前浏览器的实现形式
+
+  for (var i = 0; i < prefixes.length; i++) {
+    if (requestAnimationFrame && cancelAnimationFrame) {
+      break;
+    }
+
+    prefix = prefixes[i];
+    requestAnimationFrame = requestAnimationFrame || window[prefix + 'RequestAnimationFrame'];
+    cancelAnimationFrame = cancelAnimationFrame || window[prefix + 'CancelAnimationFrame'] || window[prefix + 'CancelRequestAnimationFrame'];
+  } // 如果当前浏览器不支持requestAnimationFrame和cancelAnimationFrame，则会退到setTimeout
+
+
+  if (!requestAnimationFrame || !cancelAnimationFrame) {
+    requestAnimationFrame = function requestAnimationFrame(callback) {
+      var currTime = new Date().getTime(); // 为了使setTimteout的尽可能的接近每秒60帧的效果
+
+      var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+      var id = window.setTimeout(function () {
+        callback(currTime + timeToCall);
+      }, timeToCall);
+      lastTime = currTime + timeToCall;
+      return id;
+    };
+
+    cancelAnimationFrame = function cancelAnimationFrame(id) {
+      window.clearTimeout(id);
+    };
+  }
+}
+
+//
+var script$9 = {
+  name: 'CountTo',
+  props: {
+    startVal: {
+      type: Number,
+      required: false,
+      "default": 0
+    },
+    endVal: {
+      type: Number,
+      required: false,
+      "default": 2017
+    },
+    duration: {
+      type: Number,
+      required: false,
+      "default": 3000
+    },
+    autoplay: {
+      type: Boolean,
+      required: false,
+      "default": true
+    },
+    decimals: {
+      type: Number,
+      required: false,
+      "default": 0,
+      validator: function validator(value) {
+        return value >= 0;
+      }
+    },
+    decimal: {
+      type: String,
+      required: false,
+      "default": '.'
+    },
+    separator: {
+      type: String,
+      required: false,
+      "default": ','
+    },
+    prefix: {
+      type: String,
+      required: false,
+      "default": ''
+    },
+    suffix: {
+      type: String,
+      required: false,
+      "default": ''
+    },
+    useEasing: {
+      type: Boolean,
+      required: false,
+      "default": true
+    },
+    easingFn: {
+      type: Function,
+      "default": function _default(t, b, c, d) {
+        return c * (-Math.pow(2, -10 * t / d) + 1) * 1024 / 1023 + b;
+      }
+    }
+  },
+  data: function data() {
+    return {
+      localStartVal: this.startVal,
+      displayValue: this.formatNumber(this.startVal),
+      printVal: null,
+      paused: false,
+      localDuration: this.duration,
+      startTime: null,
+      timestamp: null,
+      remaining: null,
+      rAF: null
+    };
+  },
+  computed: {
+    countDown: function countDown() {
+      return this.startVal > this.endVal;
+    }
+  },
+  watch: {
+    startVal: function startVal() {
+      if (this.autoplay) {
+        this.start();
+      }
+    },
+    endVal: function endVal() {
+      if (this.autoplay) {
+        this.start();
+      }
+    }
+  },
+  mounted: function mounted() {
+    if (this.autoplay) {
+      this.start();
+    }
+    /* eslint-disable */
+
+
+    this.$emit('mountedCallback');
+  },
+  methods: {
+    start: function start() {
+      this.localStartVal = this.startVal;
+      this.startTime = null;
+      this.localDuration = this.duration;
+      this.paused = false;
+      this.rAF = requestAnimationFrame(this.count);
+    },
+    pauseResume: function pauseResume() {
+      if (this.paused) {
+        this.resume();
+        this.paused = false;
+      } else {
+        this.pause();
+        this.paused = true;
+      }
+    },
+    pause: function pause() {
+      cancelAnimationFrame(this.rAF);
+    },
+    resume: function resume() {
+      this.startTime = null;
+      this.localDuration = +this.remaining;
+      this.localStartVal = +this.printVal;
+      requestAnimationFrame(this.count);
+    },
+    reset: function reset() {
+      this.startTime = null;
+      cancelAnimationFrame(this.rAF);
+      this.displayValue = this.formatNumber(this.startVal);
+    },
+    count: function count(timestamp) {
+      if (!this.startTime) this.startTime = timestamp;
+      this.timestamp = timestamp;
+      var progress = timestamp - this.startTime;
+      this.remaining = this.localDuration - progress;
+
+      if (this.useEasing) {
+        if (this.countDown) {
+          this.printVal = this.localStartVal - this.easingFn(progress, 0, this.localStartVal - this.endVal, this.localDuration);
+        } else {
+          this.printVal = this.easingFn(progress, this.localStartVal, this.endVal - this.localStartVal, this.localDuration);
+        }
+      } else {
+        if (this.countDown) {
+          this.printVal = this.localStartVal - (this.localStartVal - this.endVal) * (progress / this.localDuration);
+        } else {
+          this.printVal = this.localStartVal + (this.endVal - this.localStartVal) * (progress / this.localDuration);
+        }
+      }
+
+      if (this.countDown) {
+        this.printVal = this.printVal < this.endVal ? this.endVal : this.printVal;
+      } else {
+        this.printVal = this.printVal > this.endVal ? this.endVal : this.printVal;
+      }
+
+      this.displayValue = this.formatNumber(this.printVal);
+
+      if (progress < this.localDuration) {
+        this.rAF = requestAnimationFrame(this.count);
+      } else {
+        this.$emit('callback');
+      }
+    },
+    isNumber: function isNumber(val) {
+      return !isNaN(parseFloat(val));
+    },
+    formatNumber: function formatNumber(num) {
+      num = num.toFixed(this.decimals);
+      num += '';
+      var x = num.split('.');
+      var x1 = x[0];
+      var x2 = x.length > 1 ? this.decimal + x[1] : '';
+      var rgx = /(\d+)(\d{3})/;
+
+      if (this.separator && !this.isNumber(this.separator)) {
+        while (rgx.test(x1)) {
+          x1 = x1.replace(rgx, '$1' + this.separator + '$2');
+        }
+      }
+
+      return this.prefix + x1 + x2 + this.suffix;
+    }
+  },
+  destroyed: function destroyed() {
+    cancelAnimationFrame(this.rAF);
+  }
+};
+
+function render$9(_ctx, _cache) {
+  return (openBlock(), createBlock("span", null, toDisplayString(_ctx.displayValue), 1 /* TEXT */))
+}
+
+script$9.render = render$9;
+script$9.__file = "src/components/VueCountTo/vue-countTo.vue";
+
+function VueCountTo (Vue) {
+  Vue.component(script$9.name, script$9);
+}
+
+//
+var script$a = {
+  name: 'VueEcharts',
+  props: {
+    options: Object,
+    theme: [String, Object]
+  },
+  setup: function setup(ctx) {
+    var dom;
+    var chart;
+    var className = "echarts".concat(v4());
+
+    var initChart = function initChart() {
+      if (!chart) {
+        dom = document.getElementsByClassName(className)[0];
+        chart = Echarts.init(dom, ctx.theme);
+      }
+
+      if (ctx.options) {
+        chart.setOption(ctx.options);
+      }
+    };
+
+    onMounted(function () {
+      initChart();
+    });
+    watch(function () {
+      return ctx.options;
+    }, function () {
+      initChart();
+    });
+    return {
+      className: className
+    };
+  }
+};
+
+const _withId$6 = /*#__PURE__*/withScopeId("data-v-38cd74e2");
+
+const render$a = /*#__PURE__*/_withId$6(function render(_ctx, _cache) {
+  return (openBlock(), createBlock("div", {
+    class: [_ctx.className, 'echarts']
+  }, null, 2 /* CLASS */))
+});
+
+var css_248z$8 = ".echarts[data-v-38cd74e2] {\n  width: 100%;\n  height: 100%;\n}";
+styleInject(css_248z$8);
+
+script$a.render = render$a;
+script$a.__scopeId = "data-v-38cd74e2";
+script$a.__file = "src/components/VueEcharts/VueEcharts.vue";
+
+function VueEcharts (Vue) {
+  Vue.component(script$a.name, script$a);
+}
+
 function index (Vue) {
   Vue.use(Test);
   Vue.use(Test2);
@@ -2025,6 +2419,9 @@ function index (Vue) {
   Vue.use(ImoocLoading);
   Vue.use(ImoocFlyBox);
   Vue.use(Container);
+  Vue.use(ImoocLogo);
+  Vue.use(VueCountTo);
+  Vue.use(VueEcharts);
 }
 
 export default index;
