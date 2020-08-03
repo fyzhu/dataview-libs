@@ -2191,6 +2191,53 @@ function VueEcharts (Vue) {
   Vue.component(script$7.name, script$7);
 }
 
+function _arrayLikeToArray(arr, len) {
+  if (len == null || len > arr.length) len = arr.length;
+
+  for (var i = 0, arr2 = new Array(len); i < len; i++) {
+    arr2[i] = arr[i];
+  }
+
+  return arr2;
+}
+
+var arrayLikeToArray = _arrayLikeToArray;
+
+function _arrayWithoutHoles(arr) {
+  if (Array.isArray(arr)) return arrayLikeToArray(arr);
+}
+
+var arrayWithoutHoles = _arrayWithoutHoles;
+
+function _iterableToArray(iter) {
+  if (typeof Symbol !== "undefined" && Symbol.iterator in Object(iter)) return Array.from(iter);
+}
+
+var iterableToArray = _iterableToArray;
+
+function _unsupportedIterableToArray(o, minLen) {
+  if (!o) return;
+  if (typeof o === "string") return arrayLikeToArray(o, minLen);
+  var n = Object.prototype.toString.call(o).slice(8, -1);
+  if (n === "Object" && o.constructor) n = o.constructor.name;
+  if (n === "Map" || n === "Set") return Array.from(o);
+  if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return arrayLikeToArray(o, minLen);
+}
+
+var unsupportedIterableToArray = _unsupportedIterableToArray;
+
+function _nonIterableSpread() {
+  throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+
+var nonIterableSpread = _nonIterableSpread;
+
+function _toConsumableArray(arr) {
+  return arrayWithoutHoles(arr) || iterableToArray(arr) || unsupportedIterableToArray(arr) || nonIterableSpread();
+}
+
+var toConsumableArray = _toConsumableArray;
+
 function useScreen(id) {
   var width = ref(0);
   var height = ref(0);
@@ -4990,7 +5037,6 @@ var assign = _createAssigner(function(object, source) {
 
 var assign_1 = assign;
 
-//
 var defaultConfig = {
   // 标题数据，格式：['a','b','c']
   headerData: [],
@@ -5025,7 +5071,11 @@ var defaultConfig = {
   headerFontSize: 28,
   rowFontSize: 28,
   headerColor: '#fff',
-  rowColor: '#000'
+  rowColor: '#000',
+  moveNum: 1,
+  // 移动的位置
+  duration: 2000 // 动画间隔
+
 };
 var script$8 = {
   name: 'BaseScrollList',
@@ -5052,8 +5102,13 @@ var script$8 = {
     var rowBg = ref([]);
     var rowHeights = ref([]);
     var rowsData = ref([]);
+    var currentRowsData = ref([]); //
+
+    var currentIndex = ref(0); // 动画指针
+
     var rowNum = ref(defaultConfig.rowNum);
     var aligns = ref([]);
+    var avgHeight; // 行高
 
     var handleHeader = function handleHeader(config) {
       var _headerData = cloneDeep_1(config.headerData);
@@ -5113,7 +5168,25 @@ var script$8 = {
       headerData.value = _headerData;
       headerStyle.value = _headerStyle;
       rowStyle.value = _rowStyle;
-      rowsData.value = _rowsData;
+      var rowNum = config.rowNum;
+
+      if (_rowsData.length >= rowNum && _rowsData.length < rowNum * 2) {
+        var newRowData = [].concat(toConsumableArray(_rowsData), toConsumableArray(_rowsData));
+        rowsData.value = newRowData.map(function (item, index) {
+          return {
+            data: item,
+            rowIndex: index
+          };
+        });
+      } else {
+        rowsData.value = _rowsData.map(function (item, index) {
+          return {
+            data: item,
+            rowIndex: index
+          };
+        });
+      }
+
       aligns.value = _aligns;
       console.log(_aligns, aligns.value);
     };
@@ -5128,13 +5201,83 @@ var script$8 = {
         rowNum.value = rowsData.value.length;
       }
 
-      var avgHeight = unusedHeight / rowNum.value;
+      avgHeight = unusedHeight / rowNum.value;
       rowHeights.value = new Array(rowNum.value).fill(avgHeight); // 获取行背景色
 
       if (config.rowBg) {
         rowBg.value = config.rowBg;
       }
     };
+
+    var startAnimation = /*#__PURE__*/function () {
+      var _ref = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
+        var _rowHeights$value;
+
+        var config, data, rowNum, moveNum, duration, totalLength, index, _rowsData, rows, waitTime, isLast;
+
+        return regenerator.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                config = actualConfig.value;
+                data = config.data, rowNum = config.rowNum, moveNum = config.moveNum, duration = config.duration;
+                totalLength = data.length;
+
+                if (!(totalLength < rowNum)) {
+                  _context.next = 5;
+                  break;
+                }
+
+                return _context.abrupt("return");
+
+              case 5:
+                index = currentIndex.value;
+                _rowsData = cloneDeep_1(rowsData.value); // 将数据重新头尾相连
+
+                rows = _rowsData.slice(index);
+                rows.push.apply(rows, toConsumableArray(_rowsData.slice(0, index)));
+                currentRowsData.value = rows; // 先将所有行的高度还原
+
+                rowHeights.value = new Array(totalLength).fill(avgHeight);
+                waitTime = 300;
+                _context.next = 14;
+                return new Promise(function (resolve) {
+                  return setTimeout(resolve, waitTime);
+                });
+
+              case 14:
+                // 将moveNum的行高度设置0
+                (_rowHeights$value = rowHeights.value).splice.apply(_rowHeights$value, [0, moveNum].concat(toConsumableArray(new Array(moveNum).fill(0))));
+
+                currentIndex.value += moveNum; // 是否到达最后一组数据
+
+                isLast = currentIndex.value - totalLength;
+
+                if (isLast >= 0) {
+                  currentIndex.value = isLast;
+                }
+
+                _context.next = 20;
+                return new Promise(function (resolve) {
+                  return setTimeout(resolve, duration - waitTime);
+                });
+
+              case 20:
+                _context.next = 22;
+                return startAnimation();
+
+              case 22:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }));
+
+      return function startAnimation() {
+        return _ref.apply(this, arguments);
+      };
+    }();
 
     onMounted(function () {
       var _actualConfig = assign_1(defaultConfig, props.config); // 赋值rowsData
@@ -5143,7 +5286,9 @@ var script$8 = {
       rowsData.value = _actualConfig.data || [];
       handleHeader(_actualConfig);
       handleRows(_actualConfig);
-      actualConfig.value = _actualConfig;
+      actualConfig.value = _actualConfig; // 展示动画
+
+      startAnimation();
     });
     return {
       id: id,
@@ -5154,8 +5299,10 @@ var script$8 = {
       columnWidths: columnWidths,
       rowHeights: rowHeights,
       rowsData: rowsData,
+      currentRowsData: currentRowsData,
       rowBg: rowBg,
-      actualConfig: actualConfig
+      actualConfig: actualConfig,
+      height: height
     };
   }
 };
@@ -5189,35 +5336,43 @@ const render$8 = /*#__PURE__*/_withId$5(function render(_ctx, _cache) {
         }, null, 12 /* STYLE, PROPS */, ["innerHTML", "align"]))
       }), 128 /* KEYED_FRAGMENT */))
     ], 4 /* STYLE */),
-    (openBlock(true), createBlock(Fragment, null, renderList(_ctx.rowsData, (rowData, rowIndex) => {
-      return (openBlock(), createBlock("div", {
-        class: "base-scroll-list-rows",
-        key: rowIndex,
-        style: {
-        height: `${_ctx.rowHeights[rowIndex]}px`,
-        backgroundColor: rowIndex % 2 === 0 ? _ctx.rowBg[1] : _ctx.rowBg[0],
+    createVNode("div", {
+      class: "base-scroll-list-rows-wrapper",
+      style: {
+        height: `${_ctx.height - _ctx.actualConfig.headerHeight}px`
+      }
+    }, [
+      (openBlock(true), createBlock(Fragment, null, renderList(_ctx.currentRowsData, (rowData, index) => {
+        return (openBlock(), createBlock("div", {
+          class: "base-scroll-list-rows",
+          key: rowData.rowIndex,
+          style: {
+        height: `${_ctx.rowHeights[index]}px`,
+        lineHeight: `${_ctx.rowHeights[index]}px`,
+        backgroundColor: rowData.rowIndex % 2 === 0 ? _ctx.rowBg[1] : _ctx.rowBg[0],
         fontSize: `${_ctx.actualConfig.rowFontSize}px`,
         color: _ctx.actualConfig.rowColor,
       }
-      }, [
-        (openBlock(true), createBlock(Fragment, null, renderList(rowData, (colData, colIndex) => {
-          return (openBlock(), createBlock("div", {
-            class: "base-scroll-list-columns",
-            key: colData + colIndex,
-            style: {
+        }, [
+          (openBlock(true), createBlock(Fragment, null, renderList(rowData.data, (colData, colIndex) => {
+            return (openBlock(), createBlock("div", {
+              class: "base-scroll-list-columns base-scroll-list-text",
+              key: colData + colIndex,
+              style: {
           width: `${_ctx.columnWidths[colIndex]}px`,
           ..._ctx.rowStyle[colIndex]
         },
-            innerHTML: colData,
-            align: _ctx.aligns[colIndex]
-          }, null, 12 /* STYLE, PROPS */, ["innerHTML", "align"]))
-        }), 128 /* KEYED_FRAGMENT */))
-      ], 4 /* STYLE */))
-    }), 128 /* KEYED_FRAGMENT */))
+              innerHTML: colData,
+              align: _ctx.aligns[colIndex]
+            }, null, 12 /* STYLE, PROPS */, ["innerHTML", "align"]))
+          }), 128 /* KEYED_FRAGMENT */))
+        ], 4 /* STYLE */))
+      }), 128 /* KEYED_FRAGMENT */))
+    ], 4 /* STYLE */)
   ], 8 /* PROPS */, ["id"]))
 });
 
-var css_248z$7 = ".base-scroll-list[data-v-69eed30f] {\n  width: 100%;\n  height: 100%;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-text {\n  padding: 0 10px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  box-sizing: border-box;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-header {\n  display: flex;\n  align-items: center;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows {\n  display: flex;\n  align-items: center;\n}";
+var css_248z$7 = ".base-scroll-list[data-v-69eed30f] {\n  width: 100%;\n  height: 100%;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-text {\n  padding: 0 10px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  box-sizing: border-box;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-header {\n  display: flex;\n  align-items: center;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper {\n  overflow: hidden;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper .base-scroll-list-rows {\n  display: flex;\n  align-items: center;\n  transition: all 0.3s linear;\n}";
 styleInject(css_248z$7);
 
 script$8.render = render$8;
