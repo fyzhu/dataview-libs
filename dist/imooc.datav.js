@@ -5063,6 +5063,8 @@
     headerIndexStyle: {
       width: '50px'
     },
+    // 序号列的数据内容
+    headerIndexData: [],
     // 序号列内容的样式
     rowIndexStyle: {
       width: '50px'
@@ -5113,6 +5115,7 @@
 
       var rowNum = vue.ref(defaultConfig.rowNum);
       var aligns = vue.ref([]);
+      var isAnimationStart = vue.ref(true);
       var avgHeight; // 行高
 
       var handleHeader = function handleHeader(config) {
@@ -5138,7 +5141,12 @@
           _rowStyle.unshift(config.rowIndexStyle);
 
           _rowsData.forEach(function (rows, index) {
-            rows.unshift(index + 1);
+            // 处理序号列的数据
+            if (config.headerIndexData && config.headerIndexData.length > 0 && config.headerIndexData[index]) {
+              rows.unshift(config.headerIndexData[index]);
+            } else {
+              rows.unshift(index + 1);
+            }
           });
 
           _aligns.unshift('center');
@@ -5218,24 +5226,32 @@
         var _ref = asyncToGenerator( /*#__PURE__*/regenerator.mark(function _callee() {
           var _rowHeights$value;
 
-          var config, data, rowNum, moveNum, duration, totalLength, index, _rowsData, rows, waitTime, isLast;
+          var config, rowNum, moveNum, duration, totalLength, index, _rowsData, rows, waitTime, isLast;
 
           return regenerator.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  config = actualConfig.value;
-                  data = config.data, rowNum = config.rowNum, moveNum = config.moveNum, duration = config.duration;
-                  totalLength = data.length;
-
-                  if (!(totalLength < rowNum)) {
-                    _context.next = 5;
+                  if (isAnimationStart) {
+                    _context.next = 2;
                     break;
                   }
 
                   return _context.abrupt("return");
 
-                case 5:
+                case 2:
+                  config = actualConfig.value;
+                  rowNum = config.rowNum, moveNum = config.moveNum, duration = config.duration;
+                  totalLength = rowsData.value.length;
+
+                  if (!(totalLength < rowNum)) {
+                    _context.next = 7;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 7:
                   index = currentIndex.value;
                   _rowsData = cloneDeep_1(rowsData.value); // 将数据重新头尾相连
 
@@ -5245,12 +5261,21 @@
 
                   rowHeights.value = new Array(totalLength).fill(avgHeight);
                   waitTime = 300;
-                  _context.next = 14;
+
+                  if (isAnimationStart) {
+                    _context.next = 16;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 16:
+                  _context.next = 18;
                   return new Promise(function (resolve) {
                     return setTimeout(resolve, waitTime);
                   });
 
-                case 14:
+                case 18:
                   // 将moveNum的行高度设置0
                   (_rowHeights$value = rowHeights.value).splice.apply(_rowHeights$value, [0, moveNum].concat(toConsumableArray(new Array(moveNum).fill(0))));
 
@@ -5262,16 +5287,32 @@
                     currentIndex.value = isLast;
                   }
 
-                  _context.next = 20;
+                  if (isAnimationStart) {
+                    _context.next = 24;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 24:
+                  _context.next = 26;
                   return new Promise(function (resolve) {
                     return setTimeout(resolve, duration - waitTime);
                   });
 
-                case 20:
-                  _context.next = 22;
+                case 26:
+                  if (isAnimationStart) {
+                    _context.next = 28;
+                    break;
+                  }
+
+                  return _context.abrupt("return");
+
+                case 28:
+                  _context.next = 30;
                   return startAnimation();
 
-                case 22:
+                case 30:
                 case "end":
                   return _context.stop();
               }
@@ -5284,7 +5325,13 @@
         };
       }();
 
-      vue.onMounted(function () {
+      var stopAnimation = function stopAnimation() {
+        isAnimationStart.value = false;
+      };
+
+      var update = function update() {
+        stopAnimation();
+
         var _actualConfig = assign_1(defaultConfig, props.config); // 赋值rowsData
 
 
@@ -5293,7 +5340,14 @@
         handleRows(_actualConfig);
         actualConfig.value = _actualConfig; // 展示动画
 
+        isAnimationStart.value = true;
         startAnimation();
+      };
+
+      vue.watch(function () {
+        return props.config;
+      }, function () {
+        update();
       });
       return {
         id: id,
@@ -5377,7 +5431,7 @@
     ], 8 /* PROPS */, ["id"]))
   });
 
-  var css_248z$7 = ".base-scroll-list[data-v-69eed30f] {\n  width: 100%;\n  height: 100%;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-text {\n  padding: 0 10px;\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  box-sizing: border-box;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-header {\n  display: flex;\n  align-items: center;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper {\n  overflow: hidden;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper .base-scroll-list-rows {\n  display: flex;\n  align-items: center;\n  transition: all 0.3s linear;\n}";
+  var css_248z$7 = ".base-scroll-list[data-v-69eed30f] {\n  width: 100%;\n  height: 100%;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-text {\n  /*padding: 0 10px;*/\n  white-space: nowrap;\n  overflow: hidden;\n  text-overflow: ellipsis;\n  box-sizing: border-box;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-header {\n  display: flex;\n  align-items: center;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper {\n  overflow: hidden;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper .base-scroll-list-rows {\n  display: flex;\n  align-items: center;\n  transition: all 0.3s linear;\n}\n.base-scroll-list[data-v-69eed30f] .base-scroll-list-rows-wrapper .base-scroll-list-rows .base-scroll-list-columns {\n  height: 100%;\n}";
   styleInject(css_248z$7);
 
   script$8.render = render$8;
