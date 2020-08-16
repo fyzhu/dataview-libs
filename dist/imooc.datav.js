@@ -88,8 +88,7 @@
     name: 'SvgAnimation',
     setup: function setup() {
       vue.onMounted(function () {
-        var logo = document.getElementsByClassName('logo')[0];
-        console.log(logo.getTotalLength());
+        var logo = document.getElementsByClassName('logo')[0]; // console.log(logo.getTotalLength())
       });
     }
   };
@@ -730,8 +729,8 @@
       }
     },
     setup: function setup() {
-      var uuid = v4();
-      console.log(uuid);
+      var uuid = v4(); // console.log(uuid)
+
       var width = vue.ref(0);
       var height = vue.ref(0);
       var refName = 'imoocFlyBox';
@@ -1673,9 +1672,9 @@
             if (!originalWidth.value || !originalHeight.value) {
               originalWidth.value = window.screen.width;
               originalHeight.value = window.screen.height;
-            }
+            } // console.log(width.value, height.value, originalWidth.value, originalHeight.value)
 
-            console.log(width.value, height.value, originalWidth.value, originalHeight.value);
+
             resolve();
           });
         });
@@ -1697,8 +1696,8 @@
         var currentHeight = document.body.clientHeight; // 获取大屏最终的宽高
 
         var realWidth = width.value || originalWidth.value;
-        var realHeight = height.value || originalHeight.value;
-        console.log(currentWidth, currentHeight);
+        var realHeight = height.value || originalHeight.value; // console.log(currentWidth, currentHeight)
+
         var widthScale = currentWidth / realWidth;
         var heightScale = currentHeight / realHeight;
         dom && (dom.style.transform = "scale(".concat(widthScale, ", ").concat(heightScale, ")"));
@@ -5200,8 +5199,7 @@
           });
         }
 
-        aligns.value = _aligns;
-        console.log(_aligns, aligns.value);
+        aligns.value = _aligns; // console.log(_aligns, aligns.value)
       };
 
       var handleRows = function handleRows(config) {

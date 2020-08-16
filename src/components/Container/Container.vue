@@ -41,7 +41,7 @@
               originalWidth.value = window.screen.width
               originalHeight.value = window.screen.height
             }
-            console.log(width.value, height.value, originalWidth.value, originalHeight.value)
+            // console.log(width.value, height.value, originalWidth.value, originalHeight.value)
             resolve()
           })
         })
@@ -64,7 +64,7 @@
         // 获取大屏最终的宽高
         const realWidth = width.value || originalWidth.value
         const realHeight = height.value || originalHeight.value
-        console.log(currentWidth, currentHeight)
+        // console.log(currentWidth, currentHeight)
         const widthScale = currentWidth / realWidth
         const heightScale = currentHeight / realHeight
         dom && (dom.style.transform = `scale(${widthScale}, ${heightScale})`)

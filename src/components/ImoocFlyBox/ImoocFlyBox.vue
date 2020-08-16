@@ -73,7 +73,7 @@
     },
     setup() {
       const uuid = uuidv4()
-      console.log(uuid)
+      // console.log(uuid)
       const width = ref(0)
       const height = ref(0)
       const refName = 'imoocFlyBox'

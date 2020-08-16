@@ -194,7 +194,7 @@
         }
         aligns.value = _aligns
 
-        console.log(_aligns, aligns.value)
+        // console.log(_aligns, aligns.value)
       }
 
       const handleRows = (config) => {

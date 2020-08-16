@@ -83,8 +83,7 @@ var script$1 = {
   name: 'SvgAnimation',
   setup: function setup() {
     onMounted(function () {
-      var logo = document.getElementsByClassName('logo')[0];
-      console.log(logo.getTotalLength());
+      var logo = document.getElementsByClassName('logo')[0]; // console.log(logo.getTotalLength())
     });
   }
 };
@@ -725,8 +724,8 @@ var script$3 = {
     }
   },
   setup: function setup() {
-    var uuid = v4();
-    console.log(uuid);
+    var uuid = v4(); // console.log(uuid)
+
     var width = ref(0);
     var height = ref(0);
     var refName = 'imoocFlyBox';
@@ -1668,9 +1667,9 @@ var script$4 = {
           if (!originalWidth.value || !originalHeight.value) {
             originalWidth.value = window.screen.width;
             originalHeight.value = window.screen.height;
-          }
+          } // console.log(width.value, height.value, originalWidth.value, originalHeight.value)
 
-          console.log(width.value, height.value, originalWidth.value, originalHeight.value);
+
           resolve();
         });
       });
@@ -1692,8 +1691,8 @@ var script$4 = {
       var currentHeight = document.body.clientHeight; // 获取大屏最终的宽高
 
       var realWidth = width.value || originalWidth.value;
-      var realHeight = height.value || originalHeight.value;
-      console.log(currentWidth, currentHeight);
+      var realHeight = height.value || originalHeight.value; // console.log(currentWidth, currentHeight)
+
       var widthScale = currentWidth / realWidth;
       var heightScale = currentHeight / realHeight;
       dom && (dom.style.transform = "scale(".concat(widthScale, ", ").concat(heightScale, ")"));
@@ -5195,8 +5194,7 @@ var script$8 = {
         });
       }
 
-      aligns.value = _aligns;
-      console.log(_aligns, aligns.value);
+      aligns.value = _aligns; // console.log(_aligns, aligns.value)
     };
 
     var handleRows = function handleRows(config) {
