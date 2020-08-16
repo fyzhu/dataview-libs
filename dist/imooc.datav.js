@@ -840,7 +840,7 @@
     ], 512 /* NEED_PATCH */))
   });
 
-  var css_248z$3 = ".imooc-fly-box[data-v-c0159702] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.imooc-fly-box[data-v-c0159702] svg {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n.imooc-fly-box[data-v-c0159702] .imooc-fly-box-content {\n  width: 100%;\n  height: 100%;\n  padding: 5px;\n  box-sizing: border-box;\n}";
+  var css_248z$3 = ".imooc-fly-box[data-v-c0159702] {\n  position: relative;\n  width: 100%;\n  height: 100%;\n}\n.imooc-fly-box[data-v-c0159702] svg {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n}\n.imooc-fly-box[data-v-c0159702] .imooc-fly-box-content {\n  width: 100%;\n  height: 100%;\n  padding: 2px;\n  box-sizing: border-box;\n}";
   styleInject(css_248z$3);
 
   script$3.render = render$3;
