@@ -15,7 +15,7 @@
     props: {
       options: Object
     },
-    setup(ctx) {
+    setup(props) {
       const refName = 'imoocContainer'
       const width = ref(0)
       const height = ref(0)
@@ -29,9 +29,9 @@
           nextTick(() => {
             dom = context.$refs[refName]
             // 获取大屏的真实尺寸
-            if (ctx.options && ctx.options.width && ctx.options.height) {
-              width.value = ctx.options.width
-              height.value = ctx.options.height
+            if (props.options && props.options.width && props.options.height) {
+              width.value = props.options.width
+              height.value = props.options.height
             } else {
               width.value = dom.clientWidth
               height.value = dom.clientHeight
