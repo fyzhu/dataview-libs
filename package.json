@@ -1,5 +1,5 @@
 {
-  "name": "imooc-datav-libs-dev",
+  "name": "dataview-libs",
   "version": "1.0.0",
   "description": "imooc datav components library",
   "main": "dist/imooc.datav.js",
