@@ -1,6 +1,6 @@
 {
   "name": "dataview-libs",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "imooc datav components library",
   "main": "dist/imooc.datav.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "imooc",
     "datav"
   ],
-  "author": "sam <247765564@qq.com>",
+  "author": "fyzhu <i@jinga.vip>",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.10.2",

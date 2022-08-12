@@ -1,5 +1,5 @@
 <template>
-  <div id="imooc-container" :ref="refName">
+  <div id="imooc-container" ref="refName">
     <template v-if="ready">
       <slot></slot>
     </template>
@@ -16,7 +16,7 @@
       options: Object
     },
     setup(props) {
-      const refName = 'imoocContainer'
+      const refName = ref(null)
       const width = ref(0)
       const height = ref(0)
       const originalWidth = ref(0)
@@ -27,7 +27,8 @@
       const initSize = () => {
         return new Promise((resolve) => {
           nextTick(() => {
-            dom = context.$refs[refName]
+            // dom = context.$refs[refName]
+            dom = refName.value
             // 获取大屏的真实尺寸
             if (props.options && props.options.width && props.options.height) {
               width.value = props.options.width
@@ -95,7 +96,7 @@
 
       onMounted(async () => {
         ready.value = false
-        context = getCurrentInstance().ctx
+        // context = getCurrentInstance().ctx
         await initSize()
         updateSize()
         updateScale()
