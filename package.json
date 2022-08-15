@@ -19,6 +19,7 @@
     "datav"
   ],
   "author": "fyzhu <i@jinga.vip>",
+  "homepage": "https://github.com/fyzhu/dataview-libs",
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.10.2",
