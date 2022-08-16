@@ -57,7 +57,6 @@
 
 <script>
   import { watch, ref } from 'vue'
-  import { v4 as uuidv4 } from 'uuid'
   import useScreen from '../../hooks/useScreen'
   import cloneDeep from 'lodash/cloneDeep'
   import assign from 'lodash/assign'
@@ -111,7 +110,7 @@
       }
     },
     setup(props) {
-      const id = `base-scroll-list-${uuidv4()}`
+      const id = `base-scroll-list-${crypto.randomUUID()}`
       const { width, height } = useScreen(id)
       const actualConfig = ref([])
       const headerData = ref([])

@@ -1,5 +1,4 @@
 import { openBlock, createBlock, createVNode, onMounted, pushScopeId, popScopeId, withScopeId, createCommentVNode, computed, renderSlot, ref, getCurrentInstance, onUnmounted, nextTick, toDisplayString, watch, Fragment, renderList } from 'vue';
-import crypto from 'crypto';
 import Echarts from 'echarts';
 
 //
@@ -660,48 +659,6 @@ function ImoocLoading (Vue) {
   Vue.component(script$2.name, script$2);
 }
 
-const rnds8 = new Uint8Array(16);
-function rng() {
-  return crypto.randomFillSync(rnds8);
-}
-
-/**
- * Convert array of 16 byte values to UUID string format of the form:
- * XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
- */
-const byteToHex = [];
-
-for (let i = 0; i < 256; ++i) {
-  byteToHex.push((i + 0x100).toString(16).substr(1));
-}
-
-function bytesToUuid(buf, offset_) {
-  const offset = offset_ || 0; // Note: Be careful editing this code!  It's been tuned for performance
-  // and works in ways you may not expect. See https://github.com/uuidjs/uuid/pull/434
-
-  return (byteToHex[buf[offset + 0]] + byteToHex[buf[offset + 1]] + byteToHex[buf[offset + 2]] + byteToHex[buf[offset + 3]] + '-' + byteToHex[buf[offset + 4]] + byteToHex[buf[offset + 5]] + '-' + byteToHex[buf[offset + 6]] + byteToHex[buf[offset + 7]] + '-' + byteToHex[buf[offset + 8]] + byteToHex[buf[offset + 9]] + '-' + byteToHex[buf[offset + 10]] + byteToHex[buf[offset + 11]] + byteToHex[buf[offset + 12]] + byteToHex[buf[offset + 13]] + byteToHex[buf[offset + 14]] + byteToHex[buf[offset + 15]]).toLowerCase();
-}
-
-function v4(options, buf, offset) {
-  options = options || {};
-  const rnds = options.random || (options.rng || rng)(); // Per 4.4, set bits for version and `clock_seq_hi_and_reserved`
-
-  rnds[6] = rnds[6] & 0x0f | 0x40;
-  rnds[8] = rnds[8] & 0x3f | 0x80; // Copy bytes to buffer, if provided
-
-  if (buf) {
-    offset = offset || 0;
-
-    for (let i = 0; i < 16; ++i) {
-      buf[offset + i] = rnds[i];
-    }
-
-    return buf;
-  }
-
-  return bytesToUuid(rnds);
-}
-
 //
 var script$3 = {
   name: 'ImoocFlyBox',
@@ -724,8 +681,8 @@ var script$3 = {
     }
   },
   setup: function setup() {
-    var uuid = v4(); // console.log(uuid)
-
+    var uuid = crypto.randomUUID();
+    // console.log(uuid);
     var width = ref(0);
     var height = ref(0);
     var refName = 'imoocFlyBox';
@@ -844,6 +801,44 @@ script$3.__file = "src/components/ImoocFlyBox/ImoocFlyBox.vue";
 function ImoocFlyBox (Vue) {
   Vue.component(script$3.name, script$3);
 }
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+
+function _asyncToGenerator(fn) {
+  return function () {
+    var self = this,
+        args = arguments;
+    return new Promise(function (resolve, reject) {
+      var gen = fn.apply(self, args);
+
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+
+      _next(undefined);
+    });
+  };
+}
+
+var asyncToGenerator = _asyncToGenerator;
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -1563,7 +1558,7 @@ var runtime = (function (exports) {
   // as the regeneratorRuntime namespace. Otherwise create a new empty
   // object. Either way, the resulting object will be used to initialize
   // the regeneratorRuntime variable at the top of this file.
-   module.exports 
+   module.exports
 ));
 
 try {
@@ -1584,44 +1579,6 @@ try {
 
 var regenerator = runtime_1;
 
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-
-function _asyncToGenerator(fn) {
-  return function () {
-    var self = this,
-        args = arguments;
-    return new Promise(function (resolve, reject) {
-      var gen = fn.apply(self, args);
-
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-
-      _next(undefined);
-    });
-  };
-}
-
-var asyncToGenerator = _asyncToGenerator;
-
 function debounce(delay, callback) {
   var task;
 
@@ -1641,23 +1598,24 @@ var script$4 = {
   props: {
     options: Object
   },
-  setup: function setup(ctx) {
-    var refName = 'imoocContainer';
+  setup: function setup(props) {
+    var refName = ref(null);
     var width = ref(0);
     var height = ref(0);
     var originalWidth = ref(0);
     var originalHeight = ref(0);
     var ready = ref(false);
-    var context, dom, observer;
+    var dom, observer;
 
     var initSize = function initSize() {
       return new Promise(function (resolve) {
         nextTick(function () {
-          dom = context.$refs[refName]; // 获取大屏的真实尺寸
+          // dom = context.$refs[refName]
+          dom = refName.value; // 获取大屏的真实尺寸
 
-          if (ctx.options && ctx.options.width && ctx.options.height) {
-            width.value = ctx.options.width;
-            height.value = ctx.options.height;
+          if (props.options && props.options.width && props.options.height) {
+            width.value = props.options.width;
+            height.value = props.options.height;
           } else {
             width.value = dom.clientWidth;
             height.value = dom.clientHeight;
@@ -1746,19 +1704,19 @@ var script$4 = {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              ready.value = false;
-              context = getCurrentInstance().ctx;
-              _context2.next = 4;
+              ready.value = false; // context = getCurrentInstance().ctx
+
+              _context2.next = 3;
               return initSize();
 
-            case 4:
+            case 3:
               updateSize();
               updateScale();
               window.addEventListener('resize', debounce(100, onResize));
               initMutationObserver();
               ready.value = true;
 
-            case 9:
+            case 8:
             case "end":
               return _context2.stop();
           }
@@ -1776,11 +1734,13 @@ var script$4 = {
   }
 };
 
+const _hoisted_1$4 = {
+  id: "imooc-container",
+  ref: "refName"
+};
+
 function render$4(_ctx, _cache) {
-  return (openBlock(), createBlock("div", {
-    id: "imooc-container",
-    ref: _ctx.refName
-  }, [
+  return (openBlock(), createBlock("div", _hoisted_1$4, [
     (_ctx.ready)
       ? renderSlot(_ctx.$slots, "default", { key: 0 })
       : createCommentVNode("v-if", true)
@@ -1839,14 +1799,14 @@ var script$5 = {
 const _withId$3 = /*#__PURE__*/withScopeId("data-v-46aab5e5");
 
 pushScopeId("data-v-46aab5e5");
-const _hoisted_1$4 = {
+const _hoisted_1$5 = {
   class: "imooc-logo",
   viewBox: "0 0 1082 1024"
 };
 popScopeId();
 
 const render$5 = /*#__PURE__*/_withId$3(function render(_ctx, _cache) {
-  return (openBlock(), createBlock("svg", _hoisted_1$4, [
+  return (openBlock(), createBlock("svg", _hoisted_1$5, [
     createVNode("path", {
       stroke: _ctx.stroke,
       "stroke-width": _ctx.strokeWidth,
@@ -2144,7 +2104,7 @@ var script$7 = {
   setup: function setup(ctx) {
     var dom;
     var chart;
-    var className = "echarts".concat(v4());
+    var className = "echarts".concat(crypto.randomUUID());
 
     var initChart = function initChart() {
       if (!chart) {
@@ -3907,11 +3867,11 @@ var _baseKeysIn = baseKeysIn;
  * _.keysIn(new Foo);
  * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
  */
-function keysIn$1(object) {
+function keysIn(object) {
   return isArrayLike_1(object) ? _arrayLikeKeys(object, true) : _baseKeysIn(object);
 }
 
-var keysIn_1 = keysIn$1;
+var keysIn_1 = keysIn;
 
 /**
  * The base implementation of `_.assignIn` without support for multiple sources
@@ -4282,9 +4242,9 @@ function initCloneArray(array) {
 var _initCloneArray = initCloneArray;
 
 /** Built-in value references. */
-var Uint8Array$1 = _root.Uint8Array;
+var Uint8Array = _root.Uint8Array;
 
-var _Uint8Array = Uint8Array$1;
+var _Uint8Array = Uint8Array;
 
 /**
  * Creates a clone of `arrayBuffer`.
@@ -4690,7 +4650,7 @@ function baseClone(value, bitmask, customizer, key, object, stack) {
 
   var keysFunc = isFull
     ? (isFlat ? _getAllKeysIn : _getAllKeys)
-    : (isFlat ? keysIn : keys_1);
+    : (isFlat ? keysIn_1 : keys_1);
 
   var props = isArr ? undefined : keysFunc(value);
   _arrayEach(props || value, function(subValue, key) {
@@ -5089,7 +5049,7 @@ var script$8 = {
     }
   },
   setup: function setup(props) {
-    var id = "base-scroll-list-".concat(v4());
+    var id = "base-scroll-list-".concat(crypto.randomUUID());
 
     var _useScreen = useScreen(id),
         width = _useScreen.width,

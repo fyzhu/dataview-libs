@@ -1,8 +1,9 @@
 {
   "name": "dataview-libs",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "imooc datav components library",
   "main": "dist/imooc.datav.js",
+  "module": "dist/imooc.datav.es.js",
   "scripts": {
     "dev": "rollup -wc rollup.config.dev.js",
     "build": "eslint ./src && rollup -c rollup.config.dev.js",
@@ -39,7 +40,7 @@
     "sass": "^1.26.8"
   },
   "dependencies": {
-    "lodash": "^4.17.19",
-    "uuid": "^8.2.0"
+    "echarts": "^4.9.0",
+    "lodash": "^4.17.19"
   }
 }

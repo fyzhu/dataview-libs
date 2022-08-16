@@ -5,7 +5,6 @@
 <script>
   import { watch, onMounted } from 'vue'
   import Echarts from 'echarts'
-  import { v4 as uuidv4 } from 'uuid'
 
   export default {
     name: 'VueEcharts',
@@ -16,7 +15,7 @@
     setup(ctx) {
       let dom
       let chart
-      let className = `echarts${uuidv4()}`
+      let className = `echarts${crypto.randomUUID()}`
       const initChart = () => {
         if (!chart) {
           dom = document.getElementsByClassName(className)[0]

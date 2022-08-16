@@ -49,7 +49,6 @@
 
 <script>
   import { computed, ref, onMounted, getCurrentInstance } from 'vue'
-  import { v4 as uuidv4 } from 'uuid'
 
   export default {
     name: 'ImoocFlyBox',
@@ -72,8 +71,8 @@
       }
     },
     setup() {
-      const uuid = uuidv4()
-      // console.log(uuid)
+      const uuid = crypto.randomUUID()
+      console.log(uuid)
       const width = ref(0)
       const height = ref(0)
       const refName = 'imoocFlyBox'
